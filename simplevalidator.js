@@ -33,7 +33,7 @@ define(['underscore', 'jquery'], function(_, $) {
         },
         isEmail: function(strOrArr) {
             throw "email regex not implemented yet";
-            return Validator.matchesRegex(strOrArr, /[^@]+@[a-z-]+\.[a-z\-\.]+/i);
+            //return Validator.matchesRegex(strOrArr, /[^@]+@[a-z-]+\.[a-z\-\.]+/i);
         },
         isUKPostcode: function(strOrArr) {
             throw "postcode regex not implemented yet";
