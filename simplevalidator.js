@@ -4,20 +4,35 @@
 //          Validator;
     
     /**
-     *  Simple Validator class.
+     *  Simple Validator class, which can do quick one-off validations, or construct more complex multiple-rule validators.
      *  @class
      *  @constructor
+     *  @namespace
      *  @name Validator
      *  @example
-     *      myValidator = new Validator();
-     *      myValidator.add('unique')
-     *      myValidator.add('minLength', 10);
-     *      myValidator.validate( someValue );
+     *      alert( Validator.unique([1, 2, 3]) ); // true
+     *      alert( Validator.unique([1, 2, 1]) ); // false
+     *      alert( Validator.minLength([1, 2, 1], 3) ); // true
+     *      
+     *      myValidatorWillPass.add('unique')
+     *      myValidatorWillPass.add('minLength', 3);
+     *      myValidatorWillPass.validate( [1, 2, 3] ); // true, unique and long enough
+     *      
+     *      myValidatorWillFail.add('unique')
+     *      myValidatorWillFail.add('minLength', 5);
+     *      myValidatorWillFail.validate( [1, 2, 3] ); // false, unique but not long enough
      */
     Validator = function() {
         var myVs = {};
         return {
             errors : [],
+            /**
+             *  Adds a validation
+             *  @name Validator#add
+             *  @function
+             *  @public
+             *  @param {String} v the name of the validation to add
+             */
             add: function(v) {
                 if ( typeof Validator[v] === 'undefined' ) {
                     throw new Error('unknown validation type: '+v);
@@ -25,12 +40,22 @@
                 if ( typeof myVs[v] === 'undefined' ) {
                     myVs[v] = [];
                 }
-                myVs[v].push(arguments.slice(1));
+                myVs[v].push(Array.prototype.slice.call(arguments, 1));
             },
-            validate: function() {
+            /**
+             *  Runs the added validations agains the supplied content
+             *  @public
+             *  @param {String|Object|Array|Boolean|Number} value The value to be validated
+             *  @returns Boolean true or false
+             *  @type Boolean
+             */
+            validate: function(value) {
                 return _(myVs).all(function(valids, name) {
                     return _(valids).all(function(args) {
-                        return Validator[name](args);
+                        var allArgs = [];
+                        allArgs.push(value);
+                        allArgs = allArgs.concat(args);
+                        return Validator[name].apply(this, allArgs);
                     });
                 });
             }
@@ -45,7 +70,7 @@
         return arr.length >= min;
     };
     Validator.maxLength = function (arr, max) {
-        return arr.length <= min;
+        return arr.length <= max;
     };
     Validator.lengthInRange = function (arr, min, max) {
         return ( minLength(arr, min) && maxLength(arr, max) );
