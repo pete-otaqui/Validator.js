@@ -27,11 +27,15 @@
         return {
             errors : [],
             /**
-             *  Adds a validation
+             *  Adds a validation, supply the name as the first argument and all subsequent arguments will be passed on
              *  @name Validator#add
              *  @function
              *  @public
              *  @param {String} v the name of the validation to add
+             *  @example
+             *      var v = new Validator();
+             *      v.add('minLength', 5); // create a validator that will check for minLength of 5
+             *      v.validate( myArray ); // returns true / false
              */
             add: function(v) {
                 if ( typeof Validator[v] === 'undefined' ) {
@@ -48,6 +52,10 @@
              *  @param {String|Object|Array|Boolean|Number} value The value to be validated
              *  @returns Boolean true or false
              *  @type Boolean
+             *  @example
+             *      var v = new Validator();
+             *      v.add('minLength', 5); 
+             *      v.validate( myArray ); // returns true / false
              */
             validate: function(value) {
                 return _(myVs).all(function(valids, name) {
@@ -82,8 +90,7 @@
         });
     };
     Validator.isEmail = function (strOrArr) {
-        throw new Error("email regex not implemented yet");
-        //return Validator.matchesRegex(strOrArr, /[^@]+@[a-z-]+\.[a-z\-\.]+/i);
+        return Validator.matchesRegex(strOrArr, /[^@]+@[a-z-]+\.[a-z\-\.]+[^\.]/i);
     };
     Validator.isUKPostcode = function (strOrArr) {
         throw new Error("postcode regex not implemented yet");
@@ -91,14 +98,34 @@
     
     Validator.htmlHasContent = function (strOrArr) {
         if ( !strOrArr ) return false;
-        var arr = (typeof strOrArr !== 'string') ? strOrArr : [strOrArr];
+        var arr = (typeof strOrArr !== 'string') ? strOrArr : [strOrArr],
+            isBrowser = (window && document && document.createElement);
         return _(arr).all(function(str) {
-            var div = document.createElement('div'), cleaned, trimmed;
-            div.innerHTML = str;
-            cleaned = div.innerText();
-            trimmed = cleaned.replace(/^\s*/, '').replace(/\s*$/, '');
-            return (trimmed.length > 0);
+            var div, cleaned, trimmed, firstLessThan;
+            str = Validator.trim(str);
+            if ( str.length === 0 ) return false;
+            if ( isBrowser ) {
+                div = document.createElement('div');
+                div.innerHTML = str;
+                // should actually be doing the "is this a valid browser" check here ...
+                cleaned = div.innerText || div.textContent;
+                trimmed = Validator.trim(cleaned);
+                return (trimmed.length > 0);
+            } else {
+                throw new Error('Html support only available in a browser!');
+                // not a browser ... do some crappy nonsense until I have a better idea
+                firstLessThan = str.indexOf('<');
+                if ( firstLessThan === -1 || firstLessThan > 0 ) {
+                    return true;
+                } else {
+                    return str.match('>\s*[^<\s]');
+                }
+            }
         });
+    };
+    
+    Validator.trim = function(str) {
+        return str.replace(/^\s+/, '').replace(/\s+$/, '');
     };
     
 // RequireJS + CommonJS AMD

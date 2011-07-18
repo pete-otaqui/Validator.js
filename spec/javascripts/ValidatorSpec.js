@@ -17,5 +17,10 @@ describe("Validator", function() {
       expect(validator.validate([1, 2, 3])).toBe(true, 'Unique');
       expect(validator.validate([1, 2, 1])).toBe(false, 'Not unique');
   });
+  
+  it("should be able to validate that html has some text content", function() {
+      expect(Validator.htmlHasContent('<p>Foo</p>')).toBe(true);
+      expect(Validator.htmlHasContent('<p><span><br/><br/></span></p>')).toBe(false);
+  });
 
 });
