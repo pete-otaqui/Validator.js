@@ -16,11 +16,26 @@ describe("Validator", function() {
       validator.add('maxLength', 5);
       expect(validator.validate([1, 2, 3])).toBe(true, 'Unique');
       expect(validator.validate([1, 2, 1])).toBe(false, 'Not unique');
+      expect(validator.validate([1, 2, 3, 4, 5])).toBe(true, 'Max length');
+      expect(validator.validate([1, 2, 3, 4, 5, 6])).toBe(false, 'Greater than max length');
   });
   
   it("should be able to validate that html has some text content", function() {
       expect(Validator.htmlHasContent('<p>Foo</p>')).toBe(true);
       expect(Validator.htmlHasContent('<p><span><br/><br/></span></p>')).toBe(false);
   });
+  
+  it("should be able to match a regular expression in a simple way", function() {
+      expect(Validator.matchesRegex('barfoobar', /foo/)).toBe(true);
+      expect(Validator.matchesRegex('barbazbar', /foo/)).toBe(false);
+  });
+  
+  it("should be able to match a regular expression in a complex way", function() {
+      var validator = new Validator();
+      validator.add('matchesRegex', /foo/);
+      expect(validator.validate('barfoobar')).toBe(true);
+      expect(validator.validate('barbazbar')).toBe(false);
+  });
+  
 
 });

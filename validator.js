@@ -73,7 +73,6 @@
     Validator.unique = function (arr) {
         return ( arr.length === _(arr).unique().length );
     };
-    
     Validator.minLength = function (arr, min) {
         return arr.length >= min;
     };
@@ -95,17 +94,16 @@
     Validator.isUKPostcode = function (strOrArr) {
         throw new Error("postcode regex not implemented yet");
     };
-    
     Validator.htmlHasContent = function (strOrArr) {
         if ( !strOrArr ) return false;
         var arr = (typeof strOrArr !== 'string') ? strOrArr : [strOrArr],
-            isBrowser = (window && document && document.createElement);
+            isBrowser = (window && document && document.createElement),
+            div = document.createElement('div');
         return _(arr).all(function(str) {
-            var div, cleaned, trimmed, firstLessThan;
+            var cleaned, trimmed, firstLessThan;
             str = Validator.trim(str);
             if ( str.length === 0 ) return false;
             if ( isBrowser ) {
-                div = document.createElement('div');
                 div.innerHTML = str;
                 // should actually be doing the "is this a valid browser" check here ...
                 cleaned = div.innerText || div.textContent;
@@ -113,13 +111,6 @@
                 return (trimmed.length > 0);
             } else {
                 throw new Error('Html support only available in a browser!');
-                // not a browser ... do some crappy nonsense until I have a better idea
-                firstLessThan = str.indexOf('<');
-                if ( firstLessThan === -1 || firstLessThan > 0 ) {
-                    return true;
-                } else {
-                    return str.match('>\s*[^<\s]');
-                }
             }
         });
     };
