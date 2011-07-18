@@ -95,23 +95,22 @@
         throw new Error("postcode regex not implemented yet");
     };
     Validator.htmlHasContent = function (strOrArr) {
-        if ( !strOrArr ) return false;
         var arr = (typeof strOrArr !== 'string') ? strOrArr : [strOrArr],
             isBrowser = (window && document && document.createElement),
-            div = document.createElement('div');
+            div;
+        if ( !strOrArr ) return false;
+        if  ( !isBrowser ) {
+            throw new Error('Html support only available in a browser!');
+        }
+        div = document.createElement('div')
         return _(arr).all(function(str) {
-            var cleaned, trimmed, firstLessThan;
+            var cleaned, trimmed;
             str = Validator.trim(str);
             if ( str.length === 0 ) return false;
-            if ( isBrowser ) {
-                div.innerHTML = str;
-                // should actually be doing the "is this a valid browser" check here ...
-                cleaned = div.innerText || div.textContent;
-                trimmed = Validator.trim(cleaned);
-                return (trimmed.length > 0);
-            } else {
-                throw new Error('Html support only available in a browser!');
-            }
+            div.innerHTML = str;
+            cleaned = div.innerText || div.textContent;
+            trimmed = Validator.trim(cleaned);
+            return (trimmed.length > 0);
         });
     };
     
