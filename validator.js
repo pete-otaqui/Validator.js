@@ -5,10 +5,10 @@
     
     /**
      *  Simple Validator class, which can do quick one-off validations, or construct more complex multiple-rule validators.
+     *  @name Validator
      *  @class
      *  @constructor
      *  @namespace
-     *  @name Validator
      *  @example
      *      alert( Validator.unique([1, 2, 3]) ); // true
      *      alert( Validator.unique([1, 2, 1]) ); // false
@@ -48,6 +48,8 @@
             },
             /**
              *  Runs the added validations agains the supplied content
+             *  @name Validator#validate
+             *  @function
              *  @public
              *  @param {String|Object|Array|Boolean|Number} value The value to be validated
              *  @returns Boolean true or false
@@ -81,30 +83,107 @@
         };
     };
     
+    /**
+     *  Returns true if an array only contains unique members, false otherwise.
+     *  @function
+     *  @name Validator.unique
+     *  
+     *  @param {Array} arr The array to test
+     *  @return {Boolean} True if all items are unique, false otherwise.
+     */
     Validator.unique = function (arr) {
         return ( arr.length === _(arr).unique().length );
     };
+    /**
+     *  Returns true if an array is greater than or equal to a given length
+     *  @function
+     *  @name Validator.minLength
+     *  
+     *  @param {Array} arr The array to test
+     *  @param {Number} min The minimum length
+     *  @return {Boolean} True if the array is long enough, false otherwise.
+     */
     Validator.minLength = function (arr, min) {
         return arr.length >= min;
     };
+    /**
+     *  Returns true if an array is less than or equal to a given length
+     *  @function
+     *  @name Validator.maxLength
+     *  
+     *  @param {Array} arr The array to test
+     *  @param {Number} min The maximum length
+     *  @return {Boolean} True if the array is short enough, false otherwise.
+     */
     Validator.maxLength = function (arr, max) {
         return arr.length <= max;
     };
+    /**
+     *  Returns true if an array is within a size range, inclusive.
+     *  @function
+     *  @name Validator.lengthInRange
+     *  
+     *  @param {Array} arr The array to test
+     *  @param {Number} min The minimum length
+     *  @param {Number} max The maximum length
+     *  @return {Boolean} True if the array is neither too long nor too short, false otherwise.
+     */
     Validator.lengthInRange = function (arr, min, max) {
         return ( minLength(arr, min) && maxLength(arr, max) );
     };
+    /**
+     *  Returns true if the argument matches a regular expression
+     *  @function
+     *  @name Validator.matchesRegex
+     *  
+     *  @param {String|String[]} strOrArr The string or array of strings to test
+     *  @param {RegExp} regex The regular expression to use for the test
+     *  @return {Boolean} True if all the strings match the regex
+     */
     Validator.matchesRegex = function (strOrArr, regex) {
         var arr = (typeof strOrArr === 'array') ? strOrArr : [strOrArr];
         return _(arr).all(function(str) {
             return str.match(regex);
         });
     };
+    /**
+     *  Very loose regex to match valid emails - generally prefers false positives to false negatives
+     *  @function
+     *  @name Validator.isEmail
+     *  
+     *  @param {String|String[]} strOrArr The string or array of strings to test
+     *  @return {Boolean} True if all the strings are valid emails
+     */
     Validator.isEmail = function (strOrArr) {
         return Validator.matchesRegex(strOrArr, /[^@]+@[a-z-]+\.[a-z\-\.]+[^\.]/i);
     };
+    /**
+     *  Matches UK Postcodes according to BS 7666 and 
+     *  @function
+     *  @name Validator.isUKPostcode
+     *  
+     *  @param {String|String[]} strOrArr The string or array of strings to test
+     *  @return {Boolean} True if all the strings are valid postcodes
+     */
     Validator.isUKPostcode = function (strOrArr) {
-        throw new Error("postcode regex not implemented yet");
+        // "A9 9AA", "A99 9AA", "A9A 9AA", "AA9 9AA", "AA99 9AA" or "AA9A 9AA"
+        // "BFPO NNNN", "BFPO c/o NNNN"
+            var nrml = /^[A-Z]{1,2}[0-9R][0-9A-Z]? *[0-9][ABD-HJLNP-UW-Z]{2}$/,
+            bfpo = /^BFPO *(c\/o)? *\d{4}$/,
+            arr = (typeof strOrArr === 'array') ? strOrArr : [strOrArr];
+        return _(arr).all(function(str) {
+            str = Validator.trim(str);
+            return ( Validator.matchesRegex(str, nrml) || Validator.matchesRegex(str, bfpo) );
+        });
     };
+    /**
+     *  Returns true if an html fragment has any textual or image content (i.e. isn't just empty <span> tags)
+     *  @function
+     *  @name Validator.htmlHasContent
+     *  
+     *  @param {String|String[]} strOrArr The string or array of strings to test
+     *  @return {Boolean} True if there is some text content or an image, false otherwise.
+     */
     Validator.htmlHasContent = function (strOrArr) {
         var arr = (typeof strOrArr !== 'string') ? strOrArr : [strOrArr],
             isBrowser = (window && document && document.createElement),
@@ -113,7 +192,7 @@
         if  ( !isBrowser ) {
             throw new Error('Html support only available in a browser!');
         }
-        div = document.createElement('div')
+        div = document.createElement('div');
         return _(arr).all(function(str) {
             var cleaned, trimmed;
             str = Validator.trim(str);
@@ -124,7 +203,14 @@
             return (trimmed.length > 0);
         });
     };
-    
+    /**
+     *  Utility function to trim strings
+     *  @function
+     *  @name Validator.trim
+     *  
+     *  @param {String} str The string to trim
+     *  @return {String} The trimmed string
+     */
     Validator.trim = function(str) {
         return str.replace(/^\s+/, '').replace(/\s+$/, '');
     };
