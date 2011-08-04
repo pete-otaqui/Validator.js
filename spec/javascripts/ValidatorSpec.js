@@ -37,5 +37,25 @@ describe("Validator", function() {
       expect(validator.validate('barbazbar')).toBe(false);
   });
   
+  it("should validate normal uk postcodes", function() {
+      expect(Validator.isUKPostcode('EC1V 3RP')).toBe(true);
+      expect(Validator.isUKPostcode('EC1V 3RPP')).toBe(false);
+  });
+  
+  it("should validate BFPO postcodes", function() {
+      expect(Validator.isUKPostcode('BFPO 1234')).toBe(true);
+      expect(Validator.isUKPostcode('BFPO c/o 1234')).toBe(true);
+      expect(Validator.isUKPostcode('BFPO 12345')).toBe(false);
+      expect(Validator.isUKPostcode('BFPO c/o 12345')).toBe(false);
+  });
+  
+  it("should be relaxed about whitespace in postcodes", function() {
+      expect(Validator.isUKPostcode('BFPO1234')).toBe(true);
+      expect(Validator.isUKPostcode('  BFPO   c/o   1234  ')).toBe(true);
+      expect(Validator.isUKPostcode('  BFPOc/o1234  ')).toBe(true);
+      expect(Validator.isUKPostcode('EC1V3RP')).toBe(true);
+      expect(Validator.isUKPostcode('  EC1V   3RP  ')).toBe(true);
+  });
+  
 
 });

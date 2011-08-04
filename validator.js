@@ -147,7 +147,7 @@
         return Validator.matchesRegex(strOrArr, /[^@]+@[a-z-]+\.[a-z\-\.]+[^\.]/i);
     };
     /**
-     *  Very loose regex to match valid emails - generally prefers false positives to false negatives
+     *  Matches UK Postcodes according to BS 7666 and 
      *  @function
      *  @name Validator.isUKPostcode
      *  
@@ -155,7 +155,15 @@
      *  @return {Boolean} True if all the strings are valid postcodes
      */
     Validator.isUKPostcode = function (strOrArr) {
-        throw new Error("postcode regex not implemented yet");
+        // "A9 9AA", "A99 9AA", "A9A 9AA", "AA9 9AA", "AA99 9AA" or "AA9A 9AA"
+        // "BFPO NNNN", "BFPO c/o NNNN"
+            var nrml = /^[A-Z]{1,2}[0-9R][0-9A-Z]? *[0-9][ABD-HJLNP-UW-Z]{2}$/,
+            bfpo = /^BFPO *(c\/o)? *\d{4}$/,
+            arr = (typeof strOrArr === 'array') ? strOrArr : [strOrArr];
+        return _(arr).all(function(str) {
+            str = Validator.trim(str);
+            return ( Validator.matchesRegex(str, nrml) || Validator.matchesRegex(str, bfpo) );
+        });
     };
     /**
      *  Returns true if an html fragment has any textual or image content (i.e. isn't just empty <span> tags)
