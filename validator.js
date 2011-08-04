@@ -56,14 +56,25 @@
              *      var v = new Validator();
              *      v.add('minLength', 5); 
              *      v.validate( myArray ); // returns true / false
+             *      console.dir(v.errors); // after v.validate() this contains an array of error messages
              */
             validate: function(value) {
+                var validator = this,
+                    allArgs,
+                    response,
+                    message;
+                this.errors = [];
                 return _(myVs).all(function(valids, name) {
                     return _(valids).all(function(args) {
-                        var allArgs = [];
+                        allArgs = [];
                         allArgs.push(value);
                         allArgs = allArgs.concat(args);
-                        return Validator[name].apply(this, allArgs);
+                        response = Validator[name].apply(this, allArgs);
+                        if ( response === false ) {
+                            message = Validator.getErrorMessage(name);
+                            validator.errors.push(message);
+                        }
+                        return response;
                     });
                 });
             }
@@ -117,6 +128,32 @@
     Validator.trim = function(str) {
         return str.replace(/^\s+/, '').replace(/\s+$/, '');
     };
+
+    Validator.messages = {
+        en: {
+            unique          : 'The list must be made up of unique items',
+            minLength       : 'The list is not long enough',
+            maxLength       : 'The list is too long',
+            lengthInRange   : 'The list is not within the length range',
+            matchesRegex    : 'The content is not well formed',
+            isEmail         : 'Must be a valid email address',
+            isUKPostcode    : 'Must be a valid postcode',
+            htmlHasContent  : 'Must not be empty'
+        }
+    }
+
+    Validator.lang = 'en';
+    Validator.defaultLang = 'en';
+
+    Validator.getErrorMessage = function(name) {
+        var message;
+        if ( Validator.messages[Validator.lang] && Validator.messages[Validator.lang][name] ) {
+            message = Validator.messages[Validator.lang][name];
+        } else if ( Validator.messages[Validator.defaultLang] && Validator.messages[Validator.defaultLang][name]) {
+            message = Validator.messages[Validator.defaultLang][name];
+        }
+        return message;
+    }
     
 // RequireJS + CommonJS AMD
 //    exports.Validator = Validator;
