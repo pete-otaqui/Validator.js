@@ -56,6 +56,19 @@ describe("Validator", function() {
       expect(Validator.isUKPostcode('EC1V3RP')).toBe(true);
       expect(Validator.isUKPostcode('  EC1V   3RP  ')).toBe(true);
   });
+
+  it("should give a set of error messages", function() {
+      var validator = new Validator();
+      validator.add('unique');
+      validator.add('minLength', 1);
+      validator.add('maxLength', 5);
+      validator.validate([1, 2, 1, 3, 5, 6, 9]); // not unique
+      expect(validator.errors).toEqual(
+          ['The list must be made up of unique items', 'The list is too long'],
+          'The correct list of validation failure messages is set'
+      );
+  });
+
   
 
 });

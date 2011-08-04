@@ -44,6 +44,7 @@
                 if ( typeof myVs[v] === 'undefined' ) {
                     myVs[v] = [];
                 }
+                console.log('adding', v);
                 myVs[v].push(Array.prototype.slice.call(arguments, 1));
             },
             /**
@@ -61,24 +62,30 @@
              *      console.dir(v.errors); // after v.validate() this contains an array of error messages
              */
             validate: function(value) {
+                console.group('validate', _(myVs).size());
                 var validator = this,
                     allArgs,
                     response,
-                    message;
+                    message,
+                    passed = true;
                 this.errors = [];
-                return _(myVs).all(function(valids, name) {
-                    return _(valids).all(function(args) {
+                _(myVs).each(function(valids, name) {
+                    var passedOne = _(valids).all(function(args) {
                         allArgs = [];
                         allArgs.push(value);
                         allArgs = allArgs.concat(args);
                         response = Validator[name].apply(this, allArgs);
                         if ( response === false ) {
                             message = Validator.getErrorMessage(name);
+                            console.log(message);
                             validator.errors.push(message);
                         }
                         return response;
                     });
+                    if ( !passedOne ) passed = false;
+                    return passedOne;
                 });
+                return passed;
             }
         };
     };
