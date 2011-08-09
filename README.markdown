@@ -24,6 +24,25 @@ Alternatively you can construct a more complex set of rules, like so:
     console.log(validator1.validate(myString)); // true
     console.log(validator2.validate(myString)); // false, string matches regex, but isn't long enough
 
+Error Messages
+---------------------
+Validator.js provides error messages as an array when using the complex construction method.
+
+    var myString = 'some string here',
+        validator = new Validator();
+    validator.add('matchesRegex', /there/);
+    validator.validate(myString); // returns false, because the string doesn't match
+    console.log(validator.errors); // contains an array of default error messages.
+
+### Custom Error Messages
+You can specify a custom error message per validation by chainging a call to message() after add():
+
+    var myString = 'some string here',
+        validator = new Validator();
+    validator.add('matchesRegex', /there/).message('You should be over there!');
+    validator.validate(myString); // returns false, because the string doesn't match
+    console.log(validator.errors); // returns ['You should be over there!']
+
 Supported Validations
 ---------------------
 You can use any of these in either the simple or complex forms.

@@ -69,6 +69,16 @@ describe("Validator", function() {
       );
   });
 
+    it("should be able to specify individual error message per validation", function() {
+        var validator = new Validator();
+        validator.add('minLength', 3).message('Foo bar baz');
+        validator.add('unique').message('Bee bop');
+        validator.validate([1, 1]);
+        expect(validator.errors).toEqual(
+            ['Foo bar baz', 'Bee bop']
+        );
+    });
+
   
 
 });

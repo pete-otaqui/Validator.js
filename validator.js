@@ -32,23 +32,32 @@
              *  @function
              *  @public
              *  @param {String} v the name of the validation to add
+             *  @return {Object} an object containing a "message()" method, which accepts a custom error message
              *  @example
              *      var v = new Validator();
              *      v.add('minLength', 5); // create a validator that will check for minLength of 5
              *      v.validate( myArray ); // returns true / false
+             *      console.dir(v.errors); // list of error messages, either the default or custom ones
              */
             add: function(v) {
+                var validation, message, messenger;
                 if ( typeof Validator[v] === 'undefined' ) {
                     throw new Error('unknown validation type: '+v);
                 }
                 if ( typeof myVs[v] === 'undefined' ) {
                     myVs[v] = [];
                 }
-                console.log('adding', v);
-                myVs[v].push(Array.prototype.slice.call(arguments, 1));
+                validation = Array.prototype.slice.call(arguments, 1);
+                myVs[v].push(validation);
+                messenger = {
+                    message: function(msg) {
+                        validation.message = msg;
+                    }
+                };
+                return messenger;
             },
             /**
-             *  Runs the added validations agains the supplied content
+             *  Runs the added validations against the supplied content
              *  @name Validator#validate
              *  @function
              *  @public
@@ -57,7 +66,8 @@
              *  @type Boolean
              *  @example
              *      var v = new Validator();
-             *      v.add('minLength', 5); 
+             *      v.add('minLength', 5);
+             *      v.add('maxLength', 10).message('It can only be 10 long!');
              *      v.validate( myArray ); // returns true / false
              *      console.dir(v.errors); // after v.validate() this contains an array of error messages
              */
@@ -76,8 +86,7 @@
                         allArgs = allArgs.concat(args);
                         response = Validator[name].apply(this, allArgs);
                         if ( response === false ) {
-                            message = Validator.getErrorMessage(name);
-                            console.log(message);
+                            message = (args.message) ? args.message : Validator.getErrorMessage(name);
                             validator.errors.push(message);
                         }
                         return response;
@@ -210,6 +219,8 @@
             return (trimmed.length > 0);
         });
     };
+
+
     /**
      *  Utility function to trim strings
      *  @function
@@ -231,7 +242,8 @@
             matchesRegex    : 'The content is not well formed',
             isEmail         : 'Must be a valid email address',
             isUKPostcode    : 'Must be a valid postcode',
-            htmlHasContent  : 'Must not be empty'
+            htmlHasContent  : 'Must not be empty',
+            hasProperty     : 'The object is missing a property'
         }
     }
 
