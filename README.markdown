@@ -43,6 +43,24 @@ You can specify a custom error message per validation by chainging a call to mes
     validator.validate(myString); // returns false, because the string doesn't match
     console.log(validator.errors); // returns ['You should be over there!']
 
+### Setting default error messages, and translating
+
+You can add and override Validator's default error messages, and add new languages and set the default language simply
+by setting some properties on the Validator object.  Validator will use messages specified in "lang" if available, and
+fallback to "defaultLang" (which is "en" unless overridden) if needed.
+
+    Validator.lang = 'XY'; // set "XY" as the current language
+    Validator.messages.XY = {
+      unique: 'XXXYYY',
+      maxLength: 'XXXXXXXX'
+    }
+    var validator = new Validator();
+    validator.add('unique');
+    validator.add('minLength', 5);
+    validator.add('maxLength', 10);
+    validator.validate([1, 2, 3]);
+    console.log( validator.errors ); // returns ['XXXYYY', 'The list is not long enough'];
+
 Chaining
 --------
 You can chain calls to add() and message().  The argument supplied to message() will only apply to the validation in the
