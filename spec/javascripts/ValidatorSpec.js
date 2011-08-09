@@ -79,6 +79,31 @@ describe("Validator", function() {
         );
     });
 
+    it("Should support chained calls to add()", function() {
+        var validator = new Validator();
+        validator
+            .add('minLength', 3)
+            .add('maxLength', 10)
+            .add('unique')
+        validator.validate([1, 1]);
+      expect(validator.errors).toEqual(
+          ['The list is not long enough', 'The list must be made up of unique items'],
+          'The correct list of validation failure messages is set'
+      );
+    });
+
+    it("Should support chained calls to add() and message()", function() {
+        var validator = new Validator();
+        validator
+            .add('minLength', 3).message('too titchy')
+            .add('maxLength', 10)
+            .add('unique').message('unoriginal');
+        validator.validate([1, 1]);
+      expect(validator.errors).toEqual(
+          ['too titchy', 'unoriginal'],
+          'The correct list of validation failure messages is set'
+      );
+    });
   
 
 });

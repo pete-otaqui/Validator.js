@@ -40,7 +40,8 @@
              *      console.dir(v.errors); // list of error messages, either the default or custom ones
              */
             add: function(v) {
-                var validation, message, messenger;
+                var validator = this,
+                    validation, message, messenger;
                 if ( typeof Validator[v] === 'undefined' ) {
                     throw new Error('unknown validation type: '+v);
                 }
@@ -52,6 +53,10 @@
                 messenger = {
                     message: function(msg) {
                         validation.message = msg;
+                        return messenger;
+                    },
+                    add: function() {
+                        return validator.add.apply(validator, arguments);
                     }
                 };
                 return messenger;
@@ -220,6 +225,17 @@
         });
     };
 
+    /**
+     * Proxies to Object.hasOwnProperty
+     * @function
+     * @name Validator.hasProperty
+     *
+     * @param {Object} obj
+     * @return {Boolean}
+     */
+    Validator.hasProperty = function(obj) {
+        return obj.hasOwnProperty(obj);
+    };
 
     /**
      *  Utility function to trim strings
