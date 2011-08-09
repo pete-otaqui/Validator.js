@@ -43,6 +43,20 @@ You can specify a custom error message per validation by chainging a call to mes
     validator.validate(myString); // returns false, because the string doesn't match
     console.log(validator.errors); // returns ['You should be over there!']
 
+Chaining
+--------
+You can chain calls to add() and message().  The argument supplied to message() will only apply to the validation in the
+single preceding call to add().
+
+    var myString = 'some string here',
+        validator = new Validator();
+    validator
+        .add('matchesRegex', /there/).message('You should be over there!')
+        .add('matchesRegex', /some/).message('Some is better than none')
+        .add('minLength', 100).message('Not long enough');
+    validator.validate(myString); // returns false, because the string doesn't match
+    console.log(validator.errors); // returns ['You should be over there!', 'Not long enough']
+
 Supported Validations
 ---------------------
 You can use any of these in either the simple or complex forms.
