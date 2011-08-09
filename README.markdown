@@ -106,3 +106,7 @@ Loose (i.e. overly permissive, rather than overly strict) check on whether a str
 ### Validator.htmlHasContent(html)
 
 Checks whether an HTML snippet actually has any textual content, once tags are stripped and whitespace is trimmed
+
+### Validator.hasProperty(object)
+
+Proxies to Object.hasOwnProperty
