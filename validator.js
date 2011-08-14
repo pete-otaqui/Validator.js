@@ -242,6 +242,23 @@ This work is copyrighted by Pete Otaqui, http://otaqui.com, under the MIT Licens
         return obj.hasOwnProperty(obj);
     };
 
+    // Validations yet to be added (some ideas from http://dojotoolkit.org/api/1.6/dojox/validate )
+    /*
+    isIpAddress
+    isUrl
+    isNumberFormat ... (###) #### ###-###
+    isCreditCardNumber
+    isIsbn
+    isInteger
+    isNumber
+    isFunction
+    isObject
+    isString
+    isRegex
+    instanceOf
+    isFileType ... 'some/path/or/file.jpg' isFileType(['jpg','png'])
+    */
+
     /**
      *  Utility function to trim strings
      *  @function
