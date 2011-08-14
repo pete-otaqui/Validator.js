@@ -1,3 +1,8 @@
+/*
+This work is copyrighted by Pete Otaqui, http://otaqui.com, under the MIT License
+*/
+
+
 // RequireJS + CommonJS AMD
 // define(function(require, exports, module) {
 //      var _ = require('underscore'),
