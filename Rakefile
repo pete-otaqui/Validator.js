@@ -1,4 +1,3 @@
-
 require 'jsdoc-toolkit/doc_task'
 # rake throws a warning because jsdoc-toolkit doesn't do this:
 include Rake::DSL
@@ -16,3 +15,4 @@ rescue LoadError
     abort "Jasmine is not available. In order to run jasmine, you must: (sudo) gem install jasmine"
   end
 end
+
