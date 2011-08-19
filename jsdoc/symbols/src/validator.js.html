@@ -1,0 +1,210 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">// RequireJS + CommonJS AMD</span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="COMM">// define(function(require, exports, module) {</span><span class="WHIT">
+<span class='line'>  3</span> </span><span class="COMM">//      var _ = require('underscore'),</span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="COMM">//          Validator;</span><span class="WHIT">
+<span class='line'>  5</span> </span><span class="WHIT">    
+<span class='line'>  6</span>     </span><span class="COMM">/**
+<span class='line'>  7</span>      *  Simple Validator class, which can do quick one-off validations, or construct more complex multiple-rule validators.
+<span class='line'>  8</span>      *  @name Validator
+<span class='line'>  9</span>      *  @class
+<span class='line'> 10</span>      *  @constructor
+<span class='line'> 11</span>      *  @namespace
+<span class='line'> 12</span>      *  @example
+<span class='line'> 13</span>      *      alert( Validator.unique([1, 2, 3]) ); // true
+<span class='line'> 14</span>      *      alert( Validator.unique([1, 2, 1]) ); // false
+<span class='line'> 15</span>      *      alert( Validator.minLength([1, 2, 1], 3) ); // true
+<span class='line'> 16</span>      *      
+<span class='line'> 17</span>      *      myValidatorWillPass.add('unique')
+<span class='line'> 18</span>      *      myValidatorWillPass.add('minLength', 3);
+<span class='line'> 19</span>      *      myValidatorWillPass.validate( [1, 2, 3] ); // true, unique and long enough
+<span class='line'> 20</span>      *      
+<span class='line'> 21</span>      *      myValidatorWillFail.add('unique')
+<span class='line'> 22</span>      *      myValidatorWillFail.add('minLength', 5);
+<span class='line'> 23</span>      *      myValidatorWillFail.validate( [1, 2, 3] ); // false, unique but not long enough
+<span class='line'> 24</span>      */</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="WHIT">    </span><span class="NAME">Validator</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">myVs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">            </span><span class="NAME">errors</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 29</span> </span><span class="WHIT">            </span><span class="COMM">/**
+<span class='line'> 30</span>              *  Adds a validation, supply the name as the first argument and all subsequent arguments will be passed on
+<span class='line'> 31</span>              *  @name Validator#add
+<span class='line'> 32</span>              *  @function
+<span class='line'> 33</span>              *  @public
+<span class='line'> 34</span>              *  @param {String} v the name of the validation to add
+<span class='line'> 35</span>              *  @example
+<span class='line'> 36</span>              *      var v = new Validator();
+<span class='line'> 37</span>              *      v.add('minLength', 5); // create a validator that will check for minLength of 5
+<span class='line'> 38</span>              *      v.validate( myArray ); // returns true / false
+<span class='line'> 39</span>              */</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="WHIT">            </span><span class="NAME">add</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 41</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">Validator</span><span class="PUNC">[</span><span class="NAME">v</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">                    </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">'unknown validation type: '</span><span class="PUNC">+</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">myVs</span><span class="PUNC">[</span><span class="NAME">v</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'undefined'</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="WHIT">                    </span><span class="NAME">myVs</span><span class="PUNC">[</span><span class="NAME">v</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">                </span><span class="NAME">myVs</span><span class="PUNC">[</span><span class="NAME">v</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">push</span><span class="PUNC">(</span><span class="NAME">Array.prototype.slice.call</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">            </span><span class="COMM">/**
+<span class='line'> 50</span>              *  Runs the added validations agains the supplied content
+<span class='line'> 51</span>              *  @name Validator#validate
+<span class='line'> 52</span>              *  @function
+<span class='line'> 53</span>              *  @public
+<span class='line'> 54</span>              *  @param {String|Object|Array|Boolean|Number} value The value to be validated
+<span class='line'> 55</span>              *  @returns Boolean true or false
+<span class='line'> 56</span>              *  @type Boolean
+<span class='line'> 57</span>              *  @example
+<span class='line'> 58</span>              *      var v = new Validator();
+<span class='line'> 59</span>              *      v.add('minLength', 5); 
+<span class='line'> 60</span>              *      v.validate( myArray ); // returns true / false
+<span class='line'> 61</span>              */</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">            </span><span class="NAME">validate</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">value</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">                </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_</span><span class="PUNC">(</span><span class="NAME">myVs</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">all</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">valids</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">name</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">                    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_</span><span class="PUNC">(</span><span class="NAME">valids</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">all</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">                        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">allArgs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">                        </span><span class="NAME">allArgs.push</span><span class="PUNC">(</span><span class="NAME">value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">                        </span><span class="NAME">allArgs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">allArgs.concat</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">                        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">Validator</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">apply</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">allArgs</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">                    </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">    
+<span class='line'> 75</span>     </span><span class="COMM">/**
+<span class='line'> 76</span>      *  Returns true if an array only contains unique members, false otherwise.
+<span class='line'> 77</span>      *  @function
+<span class='line'> 78</span>      *  @name Validator.unique
+<span class='line'> 79</span>      *  
+<span class='line'> 80</span>      *  @param {Array} arr The array to test
+<span class='line'> 81</span>      *  @return {Boolean} True if all items are unique, false otherwise.
+<span class='line'> 82</span>      */</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">    </span><span class="NAME">Validator.unique</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">arr.length</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">_</span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">unique</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">length</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'> 87</span>      *  Returns true if an array is greater than or equal to a given length
+<span class='line'> 88</span>      *  @function
+<span class='line'> 89</span>      *  @name Validator.minLength
+<span class='line'> 90</span>      *  
+<span class='line'> 91</span>      *  @param {Array} arr The array to test
+<span class='line'> 92</span>      *  @param {Number} min The minimum length
+<span class='line'> 93</span>      *  @return {Boolean} True if the array is long enough, false otherwise.
+<span class='line'> 94</span>      */</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">    </span><span class="NAME">Validator.minLength</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">min</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 96</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">arr.length</span><span class="WHIT"> </span><span class="PUNC">>=</span><span class="WHIT"> </span><span class="NAME">min</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'> 99</span>      *  Returns true if an array is less than or equal to a given length
+<span class='line'>100</span>      *  @function
+<span class='line'>101</span>      *  @name Validator.maxLength
+<span class='line'>102</span>      *  
+<span class='line'>103</span>      *  @param {Array} arr The array to test
+<span class='line'>104</span>      *  @param {Number} min The maximum length
+<span class='line'>105</span>      *  @return {Boolean} True if the array is short enough, false otherwise.
+<span class='line'>106</span>      */</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">    </span><span class="NAME">Validator.maxLength</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">max</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">arr.length</span><span class="WHIT"> </span><span class="PUNC">&lt;=</span><span class="WHIT"> </span><span class="NAME">max</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>111</span>      *  Returns true if an array is within a size range, inclusive.
+<span class='line'>112</span>      *  @function
+<span class='line'>113</span>      *  @name Validator.lengthInRange
+<span class='line'>114</span>      *  
+<span class='line'>115</span>      *  @param {Array} arr The array to test
+<span class='line'>116</span>      *  @param {Number} min The minimum length
+<span class='line'>117</span>      *  @param {Number} max The maximum length
+<span class='line'>118</span>      *  @return {Boolean} True if the array is neither too long nor too short, false otherwise.
+<span class='line'>119</span>      */</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">    </span><span class="NAME">Validator.lengthInRange</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">min</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">max</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">minLength</span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">min</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">maxLength</span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">max</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>124</span>      *  Returns true if the argument matches a regular expression
+<span class='line'>125</span>      *  @function
+<span class='line'>126</span>      *  @name Validator.matchesRegex
+<span class='line'>127</span>      *  
+<span class='line'>128</span>      *  @param {String|String[]} strOrArr The string or array of strings to test
+<span class='line'>129</span>      *  @param {RegExp} regex The regular expression to use for the test
+<span class='line'>130</span>      *  @return {Boolean} True if all the strings match the regex
+<span class='line'>131</span>      */</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">    </span><span class="NAME">Validator.matchesRegex</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">strOrArr</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">regex</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">arr</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">strOrArr</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'array'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">strOrArr</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="NAME">strOrArr</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_</span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">all</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">str</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>135</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">str.match</span><span class="PUNC">(</span><span class="NAME">regex</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>136</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>139</span>      *  Very loose regex to match valid emails - generally prefers false positives to false negatives
+<span class='line'>140</span>      *  @function
+<span class='line'>141</span>      *  @name Validator.isEmail
+<span class='line'>142</span>      *  
+<span class='line'>143</span>      *  @param {String|String[]} strOrArr The string or array of strings to test
+<span class='line'>144</span>      *  @return {Boolean} True if all the strings are valid emails
+<span class='line'>145</span>      */</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">    </span><span class="NAME">Validator.isEmail</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">strOrArr</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">Validator.matchesRegex</span><span class="PUNC">(</span><span class="NAME">strOrArr</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="REGX">/[^@]+@[a-z-]+\.[a-z\-\.]+[^\.]/i</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>149</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>150</span>      *  Very loose regex to match valid emails - generally prefers false positives to false negatives
+<span class='line'>151</span>      *  @function
+<span class='line'>152</span>      *  @name Validator.isUKPostcode
+<span class='line'>153</span>      *  
+<span class='line'>154</span>      *  @param {String|String[]} strOrArr The string or array of strings to test
+<span class='line'>155</span>      *  @return {Boolean} True if all the strings are valid postcodes
+<span class='line'>156</span>      */</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">    </span><span class="NAME">Validator.isUKPostcode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">strOrArr</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">        </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">"postcode regex not implemented yet"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>160</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>161</span>      *  Returns true if an html fragment has any textual or image content (i.e. isn't just empty &lt;span> tags)
+<span class='line'>162</span>      *  @function
+<span class='line'>163</span>      *  @name Validator.htmlHasContent
+<span class='line'>164</span>      *  
+<span class='line'>165</span>      *  @param {String|String[]} strOrArr The string or array of strings to test
+<span class='line'>166</span>      *  @return {Boolean} True if there is some text content or an image, false otherwise.
+<span class='line'>167</span>      */</span><span class="WHIT">
+<span class='line'>168</span> </span><span class="WHIT">    </span><span class="NAME">Validator.htmlHasContent</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">strOrArr</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>169</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">arr</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">strOrArr</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">'string'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">strOrArr</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="NAME">strOrArr</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="WHIT">            </span><span class="NAME">isBrowser</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">window</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">document</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">document.createElement</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>171</span> </span><span class="WHIT">            </span><span class="NAME">div</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>172</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">strOrArr</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>173</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT">  </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">isBrowser</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>174</span> </span><span class="WHIT">            </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">'Html support only available in a browser!'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>175</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>176</span> </span><span class="WHIT">        </span><span class="NAME">div</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">document.createElement</span><span class="PUNC">(</span><span class="STRN">'div'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>177</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">_</span><span class="PUNC">(</span><span class="NAME">arr</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">all</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">str</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>178</span> </span><span class="WHIT">            </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cleaned</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">trimmed</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>179</span> </span><span class="WHIT">            </span><span class="NAME">str</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Validator.trim</span><span class="PUNC">(</span><span class="NAME">str</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>180</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">str.length</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>181</span> </span><span class="WHIT">            </span><span class="NAME">div.innerHTML</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">str</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>182</span> </span><span class="WHIT">            </span><span class="NAME">cleaned</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">div.innerText</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">div.textContent</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>183</span> </span><span class="WHIT">            </span><span class="NAME">trimmed</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Validator.trim</span><span class="PUNC">(</span><span class="NAME">cleaned</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>184</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">trimmed.length</span><span class="WHIT"> </span><span class="PUNC">></span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>185</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>186</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>187</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>188</span>      *  Utility function to trim strings
+<span class='line'>189</span>      *  @function
+<span class='line'>190</span>      *  @name Validator.trim
+<span class='line'>191</span>      *  
+<span class='line'>192</span>      *  @param {String} str The string to trim
+<span class='line'>193</span>      *  @return {String} The trimmed string
+<span class='line'>194</span>      */</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="WHIT">    </span><span class="NAME">Validator.trim</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">str</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>196</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">str.replace</span><span class="PUNC">(</span><span class="REGX">/^\s+/</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">replace</span><span class="PUNC">(</span><span class="REGX">/\s+$/</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>197</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>198</span> </span><span class="WHIT">    
+<span class='line'>199</span> </span><span class="COMM">// RequireJS + CommonJS AMD</span><span class="WHIT">
+<span class='line'>200</span> </span><span class="COMM">//    exports.Validator = Validator;</span><span class="WHIT">
+<span class='line'>201</span> </span><span class="COMM">//    return Validator;</span><span class="WHIT">
+<span class='line'>202</span> </span><span class="COMM">//});</span><span class="WHIT">
+<span class='line'>203</span> </span></pre></body></html>
