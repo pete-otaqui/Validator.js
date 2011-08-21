@@ -2,11 +2,9 @@
 This work is copyrighted by Pete Otaqui, http://otaqui.com, under the MIT License
 */
 
+var Validator = function() {};
 
-// RequireJS + CommonJS AMD
-// define(function(require, exports, module) {
-//      var _ = require('underscore'),
-//          Validator;
+(function() {
     
     /**
      *  Simple Validator class, which can do quick one-off validations, or construct more complex multiple-rule validators.
@@ -82,7 +80,6 @@ This work is copyrighted by Pete Otaqui, http://otaqui.com, under the MIT Licens
              *      console.dir(v.errors); // after v.validate() this contains an array of error messages
              */
             validate: function(value) {
-                console.group('validate', _(myVs).size());
                 var validator = this,
                     allArgs,
                     response,
@@ -297,6 +294,8 @@ This work is copyrighted by Pete Otaqui, http://otaqui.com, under the MIT Licens
         }
         return message;
     }
+
+})();
     
 // RequireJS + CommonJS AMD
 //    exports.Validator = Validator;
