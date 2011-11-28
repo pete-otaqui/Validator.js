@@ -275,9 +275,96 @@ var Validator = (function() {
         return obj.hasOwnProperty(obj);
     };
 
+    Validator.isIpAddress = function(str) {
+        var bits;
+        // only valid characters, must contain "."
+        if ( ! str.match(/[0-9.]/) || str.indexOf('.')===-1 ) {
+            return false;
+        }
+        if ( !Validator.containsExactly(str, '.', 3) ) {
+            return false;
+        }
+        bits = str.split('.');
+        return bits.every(function(bit) {
+            bit = parseInt(bit, 10);
+            return (bit >= 0 && bit <= 255);
+        });
+    };
+
+    /**
+     * Validates that a string contains at least "n" instances of another string
+     * @function
+     * @name Validator.containsAtLeast
+     * 
+     * @param  {String} str The string to validate
+     * @param  {String} sub The substring to search for
+     * @param  {Number} num The number of times
+     * @return {Boolean}
+     */
+    Validator.containsAtLeast = function(str, sub, num) {
+        return (str.split(sub).length >= num+1);
+    }
+
+    /**
+     * Validates that a string contains at most "n" instances of another string
+     * @function
+     * @name Validator.containsAtMost
+     * 
+     * @param  {String} str The string to validate
+     * @param  {String} sub The substring to search for
+     * @param  {Number} num The number of times
+     * @return {Boolean}
+     */
+    Validator.containsAtMost = function(str, sub, num) {
+        return (str.split(sub).length <= num+1);
+    }
+
+    /**
+     * Validates that a string contains at between "min" and "max" instances of another string
+     * @function
+     * @name Validator.containsBetween
+     * 
+     * @param  {String} str The string to validate
+     * @param  {String} sub The substring to search for
+     * @param  {Number} num The number of times
+     * @return {Boolean}
+     */
+    Validator.containsBetween = function(str, sub, min, max) {
+        var num = str.split(sub).length - 1;
+        return ( num >= min && num <= max)
+    }
+
+    /**
+     * Validates that a string contains exactly "n" instances of another string
+     * @function
+     * @name Validator.containsExactly
+     * 
+     * @param  {String} str The string to validate
+     * @param  {String} sub The substring to search for
+     * @param  {Number} num The number of times
+     * @return {Boolean}
+     */
+    Validator.containsExactly = function(str, sub, num) {
+        return ( str.split(sub).length === num+1 );
+    };
+
+
+    /**
+     * Validates that a number is within a range (inclusive)
+     * @function
+     * @name Validator.isBetween
+     * 
+     * @param  {Number} num The number to validate
+     * @param  {Number} min The lowest acceptable number
+     * @param  {Number} max The highest acceptable number
+     * @return {Boolean}
+     */
+    Validator.isBetween = function(num, min, max) {
+        return ( num >= min && num <= max );
+    };
+
     // Validations yet to be added (some ideas from http://dojotoolkit.org/api/1.6/dojox/validate )
     /*
-    isIpAddress
     isUrl
     isNumberFormat ... (###) #### ###-###
     isCreditCardNumber
@@ -314,7 +401,13 @@ var Validator = (function() {
             isEmail         : 'Must be a valid email address',
             isUKPostcode    : 'Must be a valid postcode',
             htmlHasContent  : 'Must not be empty',
-            hasProperty     : 'The object is missing a property'
+            hasProperty     : 'The object is missing a property',
+            isIpAddress     : 'The supplied value is not an IP address',
+            containsAtMost  : 'The substring occurred too many times',
+            containsAtLeast : 'The substring occurred too few times',
+            containsBetween : 'The substring occurrences were out of range',
+            containsExactly : 'The substring occurred an incorrect number of times',
+            isBetween       : 'The number was outside of the acceptable range'
         }
     }
 
