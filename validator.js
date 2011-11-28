@@ -2,10 +2,8 @@
 This work is copyrighted by Pete Otaqui, http://otaqui.com, under the MIT License
 */
 
-var Validator = function() {};
-
-(function() {
-    
+var Validator = (function() {
+    var Validator;
     /**
      *  Simple Validator class, which can do quick one-off validations, or construct more complex multiple-rule validators.
      *  @name Validator
@@ -51,6 +49,7 @@ var Validator = function() {};
                 if ( typeof myVs[v] === 'undefined' ) {
                     myVs[v] = [];
                 }
+                console.log(v);
                 validation = Array.prototype.slice.call(arguments, 1);
                 myVs[v].push(validation);
                 messenger = {
@@ -84,10 +83,13 @@ var Validator = function() {};
                     allArgs,
                     response,
                     message,
-                    passed = true;
+                    passed = true,
+                    valids,
+                    name;
                 this.errors = [];
-                _(myVs).each(function(valids, name) {
-                    var passedOne = _(valids).all(function(args) {
+                for ( name in myVs ) {
+                    valids = myVs[name];
+                    var passedOne = valids.every(function(args) {
                         allArgs = [];
                         allArgs.push(value);
                         allArgs = allArgs.concat(args);
@@ -98,9 +100,10 @@ var Validator = function() {};
                         }
                         return response;
                     });
-                    if ( !passedOne ) passed = false;
-                    return passedOne;
-                });
+                    if ( !passedOne ) {
+                        passed = false;
+                    }
+                };
                 return passed;
             }
         };
@@ -115,7 +118,20 @@ var Validator = function() {};
      *  @return {Boolean} True if all items are unique, false otherwise.
      */
     Validator.unique = function (arr) {
-        return ( arr.length === _(arr).unique().length );
+        return ( arr.length === arr.filter(function(value, index, array) {
+            var include = false;
+            if ( !array._tempValues ) {
+                array._tempValues = [];
+            }
+            if ( array._tempValues.indexOf(value) === -1 ) {
+                array._tempValues.push(value);
+                include = true;
+            }
+            if ( index === array.length-1 ) {
+                delete array._tempValues;
+            }
+            return include;
+        }).length );
     };
     /**
      *  Returns true if an array is greater than or equal to a given length
@@ -165,7 +181,7 @@ var Validator = function() {};
      */
     Validator.matchesRegex = function (strOrArr, regex) {
         var arr = (typeof strOrArr === 'array') ? strOrArr : [strOrArr];
-        return _(arr).all(function(str) {
+        return arr.every(function(str) {
             return str.match(regex);
         });
     };
@@ -194,7 +210,7 @@ var Validator = function() {};
             var nrml = /^[A-Z]{1,2}[0-9R][0-9A-Z]? *[0-9][ABD-HJLNP-UW-Z]{2}$/,
             bfpo = /^BFPO *(c\/o)? *\d{4}$/,
             arr = (typeof strOrArr === 'array') ? strOrArr : [strOrArr];
-        return _(arr).all(function(str) {
+        return arr.every(function(str) {
             str = Validator.trim(str);
             return ( Validator.matchesRegex(str, nrml) || Validator.matchesRegex(str, bfpo) );
         });
@@ -216,7 +232,7 @@ var Validator = function() {};
             throw new Error('Html support only available in a browser!');
         }
         div = document.createElement('div');
-        return _(arr).all(function(str) {
+        return arr.every(function(str) {
             var cleaned, trimmed;
             str = Validator.trim(str);
             if ( str.length === 0 ) return false;
@@ -294,6 +310,8 @@ var Validator = function() {};
         }
         return message;
     }
+
+    return Validator;
 
 })();
     

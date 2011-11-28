@@ -12,7 +12,6 @@
 #
 src_files:
     - validator.js
-    - underscore.js
 
 # stylesheets
 #
