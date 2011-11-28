@@ -1,7 +1,7 @@
 Validator.js
 ============
 
-A simple validation module, for use server- or client-side.  It depends on underscore, from documentcloud.
+A simple validation module, for use server- or client-side.  It depends on ES5 functionality, so in old browsers you might need something like ES5 Shim
 
 Simple Usage
 -----------
