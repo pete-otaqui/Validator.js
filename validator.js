@@ -1,5 +1,23 @@
 /*
-This work is copyrighted by Pete Otaqui, http://otaqui.com, under the MIT License
+Copyright (c) 2011 Pete Otaqui, http://otaqui.com/
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 
 var Validator = (function() {
@@ -15,10 +33,12 @@ var Validator = (function() {
      *      alert( Validator.unique([1, 2, 1]) ); // false
      *      alert( Validator.minLength([1, 2, 1], 3) ); // true
      *      
+     *      var myValidatorWillPass = new Validator();
      *      myValidatorWillPass.add('unique')
      *      myValidatorWillPass.add('minLength', 3);
      *      myValidatorWillPass.validate( [1, 2, 3] ); // true, unique and long enough
      *      
+     *      var myValidatorWillFail = new Validator();
      *      myValidatorWillFail.add('unique')
      *      myValidatorWillFail.add('minLength', 5);
      *      myValidatorWillFail.validate( [1, 2, 3] ); // false, unique but not long enough
@@ -197,7 +217,7 @@ var Validator = (function() {
         return Validator.matchesRegex(strOrArr, /[^@]+@[a-z-]+\.[a-z\-\.]+[^\.]/i);
     };
     /**
-     *  Matches UK Postcodes according to BS 7666 and 
+     *  Matches UK Postcodes according to BS 7666
      *  @function
      *  @name Validator.isUKPostcode
      *  
@@ -216,7 +236,7 @@ var Validator = (function() {
         });
     };
     /**
-     *  Returns true if an html fragment has any textual or image content (i.e. isn't just empty <span> tags)
+     *  Returns true if an html fragment has any textual or image content (ie: isn't just empty <span> tags)
      *  @function
      *  @name Validator.htmlHasContent
      *  
@@ -314,8 +334,4 @@ var Validator = (function() {
     return Validator;
 
 })();
-    
-// RequireJS + CommonJS AMD
-//    exports.Validator = Validator;
-//    return Validator;
-//});
+
