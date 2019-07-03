@@ -25,7 +25,7 @@ GEM
     rubyzip (1.2.3)
     selenium-webdriver (2.1.0)
       childprocess (>= 0.1.9)
-      ffi (>= 1.0.7)
+      ffi (>= 1.9.24)
       json_pure
       rubyzip
 
