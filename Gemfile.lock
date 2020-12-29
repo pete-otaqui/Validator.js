@@ -10,7 +10,7 @@ GEM
       selenium-webdriver (>= 0.1.3)
     jsdoc-toolkit (0.2.0)
     json_pure (2.2.0)
-    rack (2.0.8)
+    rack (2.2.3)
     rake (12.3.3)
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
